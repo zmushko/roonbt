@@ -1,0 +1,45 @@
+sudo apt-get install pulseaudio pulseaudio-module-bluetooth
+sudo usermod -G bluetooth -a pi
+sudo reboot
+
+======================
+run bluetoothctl and pair with BT device
+======================
+
+add:
+    # automatically switch to newly-connected devices
+    load-module module-switch-on-connect
+in end of /etc/pulse/default.pa
+
+======================
+file /etc/module add:
+    snd-aloop
+
+file /etc/rc.local add:
+    pulseaudio --start
+    bluetoothctl connect 4C:79:6E:F4:06:95
+    /home/pi/roon.sh &
+
+file /home/pi/roon.sh:
+
+#!/bin/bash
+state=0
+while [[ true ]]; do
+        if cat /proc/asound/card0/pcm0p/sub0/status | grep closed > /dev/null; then
+                if [[ $state -gt 0 ]]; then
+                        killall arecord
+                        bluetoothctl disconnect 4C:79:6E:F4:06:95
+                        echo "Stop roon"
+                        state=0
+                fi
+        else
+                if [[ $state -lt 1 ]]; then
+                        bluetoothctl connect 4C:79:6E:F4:06:95
+                        arecord -D hw:0,1,0 -f S16_LE -r 48000 -c 2 | aplay -D bluealsa &
+                        state=1
+                        echo "Start roon"
+                fi
+        fi
+        sleep 1
+done
+
