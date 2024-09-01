@@ -1,4 +1,5 @@
 sudo apt-get install pulseaudio pulseaudio-module-bluetooth
+sudo apt install bluez-alsa-utils
 sudo usermod -G bluetooth -a pi
 sudo reboot
 
@@ -19,6 +20,9 @@ file /etc/rc.local add:
     pulseaudio --start
     bluetoothctl connect 4C:79:6E:F4:06:95
     /home/pi/roon.sh &
+    sudo modprobe g_ether
+    sudo ifconfig usb0 10.0.0.1 netmask 255.0.0.0
+    sudo udhcpd -I 10.0.0.1
 
 file /home/pi/roon.sh:
 
@@ -43,3 +47,4 @@ while [[ true ]]; do
         sleep 1
 done
 
+================================================
