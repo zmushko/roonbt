@@ -1,6 +1,10 @@
 sudo apt-get install pulseaudio pulseaudio-module-bluetooth
 sudo apt install bluez-alsa-utils
 sudo usermod -G bluetooth -a pi
+
+sudo systemctl enable bluetooth.service
+sudo systemctl start bluetooth.service
+
 sudo reboot
 
 ======================
