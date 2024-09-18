@@ -17,7 +17,7 @@ add:
 in end of /etc/pulse/default.pa
 
 ======================
-file /etc/module add:
+file /etc/modules add:
     snd-aloop
 
 file /etc/rc.local add:
